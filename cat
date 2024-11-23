@@ -1,0 +1,107 @@
+import random
+
+class Pet:
+    def __init__(self, name="Buddy", species="dog"):
+        self.name = name
+        self.species = species
+        self.happiness = 50
+        self.energy = 100
+        self.health = 100
+        self.food = 50
+        self.water = 50
+
+    def feed(self, food_amount=20):
+        if self.food >= food_amount:
+            self.food -= food_amount
+            self.happiness += 10
+            self.health += 5
+            print(f"{self.name} has been fed!")
+        else:
+            print(f"{self.name} is hungry, but there's not enough food.")
+
+    def drink(self, water_amount=20):
+        if self.water >= water_amount:
+            self.water -= water_amount
+            self.happiness += 5
+            print(f"{self.name} drank some water!")
+        else:
+            print(f"{self.name} is thirsty, but there's not enough water.")
+
+    def play(self):
+        if self.energy > 0:
+            self.energy -= 30
+            self.happiness += 20
+            print(f"{self.name} is playing!")
+        else:
+            print(f"{self.name} is too tired to play.")
+
+    def sleep(self):
+        self.energy = 100
+        self.happiness += 5
+        self.health += 5
+        print(f"{self.name} is sleeping and regaining energy.")
+
+    def check_status(self):
+        print(f"{self.name}'s status:")
+        print(f"Happiness: {self.happiness}")
+        print(f"Energy: {self.energy}")
+        print(f"Health: {self.health}")
+        print(f"Food: {self.food}")
+        print(f"Water: {self.water}")
+        print("----------------------------")
+
+    def is_sick(self):
+        if self.happiness < 20 or self.energy < 10 or self.food < 10 or self.water < 10:
+            self.health -= 10
+            print(f"{self.name} is feeling sick...")
+            if self.health < 20:
+                print(f"{self.name} is very sick! Time for a vet visit.")
+                return True
+        return False
+
+    def is_happy(self):
+        if self.happiness > 80:
+            print(f"{self.name} is very happy!")
+        elif self.happiness > 50:
+            print(f"{self.name} is feeling good!")
+        else:
+            print(f"{self.name} is a bit sad.")
+
+    def day_end(self):
+        self.energy -= 10
+        self.food -= 10
+        self.water -= 10
+        if self.energy < 0: self.energy = 0
+        if self.food < 0: self.food = 0
+        if self.water < 0: self.water = 0
+        print(f"End of the day. {self.name}'s energy, food, and water levels are reduced.")
+
+    def life_cycle(self, day):
+        print(f"\nDay {day} of {self.name}'s life:")
+        self.check_status()
+
+        action = random.choice(["feed", "drink", "play", "sleep", "nothing"])
+        if action == "feed":
+            self.feed(20)
+        elif action == "drink":
+            self.drink(20)
+        elif action == "play":
+            self.play()
+        elif action == "sleep":
+            self.sleep()
+
+        if self.is_sick():
+            print(f"{self.name} needs immediate care!")
+            return False
+
+        self.is_happy()
+        self.day_end()
+        return True
+
+
+pet = Pet(name="Buddy", species="dog")
+
+for day in range(1, 8):
+    if not pet.life_cycle(day):
+        print(f"The simulation ends as {pet.name} is too sick.")
+        break
